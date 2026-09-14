@@ -1,0 +1,12 @@
+name: AI Governance Issue
+description: Report an issue related to AI advisor or enrichment behavior.
+title: "[AI-GOV]: "
+labels: ["ai-governance"]
+body:
+  - type: textarea
+    id: details
+    attributes:
+      label: AI Action Details
+      description: Action type, model identifier, and prompt version.
+    validations:
+      required: true

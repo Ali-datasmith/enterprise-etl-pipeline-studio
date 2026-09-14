@@ -1,0 +1,19 @@
+name: Feature Request
+description: Propose a new feature or enhancement.
+title: "[FEAT]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: business_value
+    attributes:
+      label: Business Value
+      description: What value does this feature add?
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Proposed Behavior
+      description: Describe how the feature should work.
+    validations:
+      required: true

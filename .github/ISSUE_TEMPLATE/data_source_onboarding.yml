@@ -1,0 +1,15 @@
+name: Data Source Onboarding
+description: Request onboarding of a new sample or connector dataset source.
+title: "[DATA]: Onboard "
+labels: ["data-source"]
+body:
+  - type: input
+    id: source_name
+    attributes:
+      label: Source Name
+    validations:
+      required: true
+  - type: textarea
+    id: schema
+    attributes:
+      label: Schema & Column Details
