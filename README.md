@@ -174,7 +174,7 @@ To enable AI features, set the following secret in Streamlit Community Cloud or 
 ```toml
 # .streamlit/secrets.toml
 GOOGLE_API_KEY = "AIzaSy..."
-GEMINI_MODEL = "gemini-3.6-flash"
+GEMINI_MODEL = "gemini-2.5-flash"
 ```
 
 ---
