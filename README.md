@@ -1,7 +1,7 @@
 # Enterprise ETL Pipeline Studio
 
-[![CI](https://github.com/Ali-datasmith/enterprise-etl-pipeline-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/Ali-datasmith/enterprise-etl-pipeline-studio/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/Ali-datasmith/enterprise-etl-pipeline-studio/actions/workflows/codeql.yml/badge.svg)](https://github.com/Ali-datasmith/enterprise-etl-pipeline-studio/actions/workflows/codeql.yml)
+[![CI](https://github.com/Ali-datasmith/enterprise-etl-pipeline-studio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Ali-datasmith/enterprise-etl-pipeline-studio/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/Ali-datasmith/enterprise-etl-pipeline-studio/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Ali-datasmith/enterprise-etl-pipeline-studio/actions/workflows/codeql.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/streamlit-1.30%2B-red.svg)](https://streamlit.io/)
 [![Google GenAI SDK](https://img.shields.io/badge/google--genai-SDK-green.svg)](https://pypi.org/project/google-genai/)
