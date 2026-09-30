@@ -26,7 +26,11 @@ def render_data_source_tab() -> None:
 
         st.markdown("---")
         st.markdown("##### 3. Explicit URL Retrieval")
-        url_input = st.text_input("Enter HTTPS CSV/JSON URL", disabled=is_busy)
+        url_input = st.text_input(
+            "Enter HTTPS CSV/JSON URL",
+            placeholder="https://raw.githubusercontent.com/user/repo/main/data.csv",
+            disabled=is_busy,
+        )
         if st.button("Fetch Remote Dataset", disabled=is_busy):
             handle_url_fetch(url_input)
 

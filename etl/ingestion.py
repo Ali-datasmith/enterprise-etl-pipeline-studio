@@ -26,6 +26,34 @@ def compute_checksum(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
+# Well-known public hosts that require the "www." subdomain to resolve.
+_WWW_REQUIRED_HOSTS = frozenset({"github.com", "gist.github.com"})
+
+
+def normalize_url(url: str) -> str:
+    """Return a normalized, fetchable form of ``url`` without changing intent.
+
+    Light-touch fixes only: trim surrounding whitespace and add the missing
+    "www." subdomain for hosts that are known not to resolve without it
+    (e.g. "raw.githubusercontent.com" style typos or bare "github.com").
+    """
+    normalized = url.strip()
+
+    parsed = urlparse(normalized)
+    hostname = parsed.hostname or ""
+
+    needs_www = hostname in _WWW_REQUIRED_HOSTS or (
+        hostname.startswith("raw-") and ".githubusercontent.com" in hostname
+    )
+    if needs_www and not hostname.startswith("www."):
+        replaced_host = f"www.{hostname}"
+        # Preserve any userinfo (@) and port while swapping only the host part.
+        netloc = parsed.netloc.replace(hostname, replaced_host, 1)
+        normalized = parsed._replace(netloc=netloc).geturl()
+
+    return normalized
+
+
 def validate_url(url: str) -> str:
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https"):
@@ -57,14 +85,21 @@ def validate_url(url: str) -> str:
     reraise=True,
 )
 def fetch_url_content(url: str) -> bytes:
-    validated_url = validate_url(url)
+    normalized_url = normalize_url(url)
+    validated_url = validate_url(normalized_url)
     try:
         with httpx.Client(timeout=10.0, follow_redirects=False) as client:
             response = client.get(validated_url)
             response.raise_for_status()
             return response.content
+    except httpx.ConnectError as err:
+        logger.error(f"Could not resolve/connect to host for URL {validated_url}: {err}")
+        raise IngestionError(
+            f"Unable to reach host for '{validated_url}'. "
+            "Please verify the URL is correct and publicly accessible."
+        ) from err
     except httpx.HTTPError as err:
-        logger.error(f"Network error fetching URL {url}: {err}")
+        logger.error(f"Network error fetching URL {validated_url}: {err}")
         raise IngestionError(f"Data source network error: {err}") from err
 
 

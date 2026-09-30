@@ -3,6 +3,7 @@
 import time
 import uuid
 from typing import Any
+from urllib.parse import urlparse
 
 import polars as pl
 import streamlit as st
@@ -11,7 +12,7 @@ from loguru import logger
 from ai.advisor_engine import run_contract_advisor
 from ai.enrichment_engine import run_dataset_enrichment
 from etl.contracts import infer_contract_from_profile
-from etl.ingestion import fetch_url_content, ingest_data_source
+from etl.ingestion import fetch_url_content, ingest_data_source, normalize_url
 from etl.lineage import LineageTracker
 from etl.models import PipelineConfig, RunMetadata
 from etl.profiling import profile_dataset
@@ -97,12 +98,21 @@ def handle_url_fetch(url: str) -> None:
         st.warning("Please enter a valid HTTP/HTTPS URL.")
         return
 
+    normalized_url = normalize_url(url)
+
     st.session_state.pipeline_running = True
     try:
-        content = fetch_url_content(url)
-        file_name = url.split("/")[-1] or "url_download.csv"
+        content = fetch_url_content(normalized_url)
+
+        parsed_target = urlparse(normalized_url)
+        candidate_name = parsed_target.path.rstrip("/").split("/")[-1]
+        file_name = candidate_name if "." in candidate_name else "url_download.csv"
+
         df, meta = ingest_data_source(
-            content, file_name, source_type="url_fetch", notes=f"Fetched from {url}"
+            content,
+            file_name,
+            source_type="url_fetch",
+            notes=f"Fetched from {normalized_url}",
         )
 
         clear_stale_outputs()
@@ -119,7 +129,10 @@ def handle_url_fetch(url: str) -> None:
         st.success(f"Successfully fetched dataset from URL ({df.height} rows).")
     except Exception as e:
         logger.error(f"URL fetch controller failure: {e}")
-        st.session_state.pipeline_error_message = str(e)
+        st.session_state.pipeline_error_message = (
+            f"{e}\n\nHint: check that the host name resolves (for example, "
+            "'raw.githubusercontent.com' needs the full 'user/repo/branch/path' route)."
+        )
     finally:
         reset_pipeline_state()
 
