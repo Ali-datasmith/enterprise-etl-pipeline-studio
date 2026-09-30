@@ -7,6 +7,7 @@ from etl.ingestion import (
     compute_checksum,
     detect_format,
     ingest_data_source,
+    normalize_url,
     validate_url,
 )
 from etl.sample_data import get_sample_customers_csv, get_sample_parquet_bytes
@@ -57,3 +58,26 @@ def test_ingest_parquet_bytes() -> None:
     assert df.height == 3
     assert meta.file_format == "parquet"
     assert meta.column_count == 5
+
+
+def test_normalize_url_trims_whitespace() -> None:
+    assert normalize_url("  https://example.com/data.csv  ") == "https://example.com/data.csv"
+
+
+def test_normalize_url_adds_www_for_github_hosts() -> None:
+    assert (
+        normalize_url("https://github.com/user/repo/raw/main/data.csv")
+        == "https://www.github.com/user/repo/raw/main/data.csv"
+    )
+
+
+def test_normalize_url_leaves_valid_public_urls_untouched() -> None:
+    url = "https://raw.githubusercontent.com/user/repo/main/data.csv"
+    assert normalize_url(url) == url
+
+
+def test_normalize_url_preserves_port_and_path() -> None:
+    assert (
+        normalize_url("http://github.com:8080/a/b.csv?x=1")
+        == "http://www.github.com:8080/a/b.csv?x=1"
+    )
