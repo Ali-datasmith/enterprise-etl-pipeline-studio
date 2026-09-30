@@ -10,7 +10,7 @@ from loguru import logger
 
 from ai.config import resolve_ai_config
 from ai.error_taxonomy import classify_ai_error
-from ai.models import AIEnrichmentReport
+from ai.models import AIEnrichmentReport, get_clean_response_schema
 from ai.prompt_templates import ENRICHMENT_PROMPT_VERSION, build_enrichment_prompt
 from ai.sanitizer import prepare_enrichment_payload
 from etl.constants import AI_ENRICHMENT_SAMPLE_LIMIT
@@ -48,13 +48,15 @@ def run_dataset_enrichment(
     client = genai.Client(api_key=ai_cfg.api_key)
     start_time = time.time()
 
+    clean_schema = get_clean_response_schema(AIEnrichmentReport)
+
     try:
         response = client.models.generate_content(
             model=ai_cfg.model_name,
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                response_schema=AIEnrichmentReport,
+                response_schema=clean_schema,
                 temperature=0.1,
                 system_instruction="You are an AI Data Enrichment Specialist. Respond strictly with JSON matching schema.",
             ),

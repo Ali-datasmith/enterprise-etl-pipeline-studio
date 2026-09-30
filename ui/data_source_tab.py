@@ -59,7 +59,7 @@ def render_data_source_tab() -> None:
         m3.metric("Format", meta.file_format.upper())
         m4.metric("Size", f"{round((meta.size_bytes or 0) / 1024, 1)} KB")
 
-        st.dataframe(raw_df.head(100).to_pandas(), use_container_width=True)
+        st.dataframe(raw_df.head(100).to_pandas(), width="stretch")
     else:
         render_empty_state(
             "No Dataset Loaded",

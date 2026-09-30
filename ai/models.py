@@ -5,6 +5,24 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 
+def get_clean_response_schema(pydantic_model: type[BaseModel]) -> dict[str, Any]:
+    """Generates a JSON schema from a Pydantic model with additionalProperties removed.
+
+    This prevents Gemini Developer API errors ('additionalProperties is only supported in
+    Gemini Enterprise Agent Platform mode').
+    """
+    raw_schema = pydantic_model.model_json_schema()
+
+    def _clean(obj: Any) -> Any:
+        if isinstance(obj, dict):
+            return {k: _clean(v) for k, v in obj.items() if k != "additionalProperties"}
+        elif isinstance(obj, list):
+            return [_clean(i) for i in obj]
+        return obj
+
+    return _clean(raw_schema)
+
+
 class RecommendedColumn(BaseModel):
     name: str
     logical_type: str

@@ -71,7 +71,7 @@ def render_transform_tab() -> None:
 
     if cfg.transformations:
         tf_data = [t.model_dump() for t in cfg.transformations]
-        st.dataframe(pd.DataFrame(tf_data), use_container_width=True)
+        st.dataframe(pd.DataFrame(tf_data), width="stretch")
 
         if st.button("Clear All Transformations"):
             cfg.transformations = []
@@ -84,4 +84,4 @@ def render_transform_tab() -> None:
     transformed_df = st.session_state.transformed_dataset
     if transformed_df is not None:
         st.markdown("##### Transformed Dataset Preview")
-        st.dataframe(transformed_df.head(50).to_pandas(), use_container_width=True)
+        st.dataframe(transformed_df.head(50).to_pandas(), width="stretch")

@@ -9,7 +9,7 @@ from loguru import logger
 
 from ai.config import resolve_ai_config
 from ai.error_taxonomy import classify_ai_error
-from ai.models import AIAdvisorReport
+from ai.models import AIAdvisorReport, get_clean_response_schema
 from ai.prompt_templates import ADVISOR_PROMPT_VERSION, build_advisor_prompt
 from ai.sanitizer import prepare_advisor_payload
 
@@ -27,13 +27,15 @@ def run_contract_advisor(
     client = genai.Client(api_key=ai_cfg.api_key)
     start_time = time.time()
 
+    clean_schema = get_clean_response_schema(AIAdvisorReport)
+
     try:
         response = client.models.generate_content(
             model=ai_cfg.model_name,
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                response_schema=AIAdvisorReport,
+                response_schema=clean_schema,
                 temperature=0.1,
                 system_instruction="You are an expert Data Governance and ETL Architect. Respond with JSON matching schema.",
             ),

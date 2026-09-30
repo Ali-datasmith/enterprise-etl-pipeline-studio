@@ -52,19 +52,19 @@ def render_ai_tab() -> None:
             with st.expander("Recommended Column Contracts", expanded=True):
                 st.dataframe(
                     pd.DataFrame([c.model_dump() for c in rep.recommended_columns]),
-                    use_container_width=True,
+                    width="stretch",
                 )
 
             with st.expander("Recommended Quality Checks"):
                 st.dataframe(
                     pd.DataFrame([chk.model_dump() for chk in rep.recommended_checks]),
-                    use_container_width=True,
+                    width="stretch",
                 )
 
             with st.expander("Identified Production Risks"):
                 st.dataframe(
                     pd.DataFrame([r.model_dump() for r in rep.production_risks]),
-                    use_container_width=True,
+                    width="stretch",
                 )
 
     with tab2:
@@ -117,4 +117,4 @@ def render_ai_tab() -> None:
             st.markdown("---")
             st.markdown(f"**Governance Notes:** {rep_en.governance_notes}")
             records_data = [rec.model_dump() for rec in rep_en.enriched_records]
-            st.dataframe(pd.DataFrame(records_data), use_container_width=True)
+            st.dataframe(pd.DataFrame(records_data), width="stretch")

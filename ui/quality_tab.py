@@ -45,12 +45,12 @@ def render_quality_tab() -> None:
 
         st.markdown("##### Detailed Check Results")
         results_data = [r.model_dump() for r in report.results]
-        st.dataframe(pd.DataFrame(results_data), use_container_width=True)
+        st.dataframe(pd.DataFrame(results_data), width="stretch")
 
         quarantine_df = st.session_state.quarantine_dataset
         if quarantine_df is not None and quarantine_df.height > 0:
             with st.expander(f"⚠️ Quarantined Records ({quarantine_df.height} rows)"):
-                st.dataframe(quarantine_df.head(50).to_pandas(), use_container_width=True)
+                st.dataframe(quarantine_df.head(50).to_pandas(), width="stretch")
     else:
         render_empty_state(
             "Quality Gates Not Executed",

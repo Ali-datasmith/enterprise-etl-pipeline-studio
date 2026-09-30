@@ -62,7 +62,7 @@ def render_contract_tab() -> None:
             "sensitive": st.column_config.CheckboxColumn("Sensitive (Redact)?"),
             "description": st.column_config.TextColumn("Description"),
         },
-        use_container_width=True,
+        width="stretch",
         key="contract_editor",
     )
 

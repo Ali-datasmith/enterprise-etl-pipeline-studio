@@ -28,13 +28,13 @@ def render_observability_tab() -> None:
 
     c1, c2 = st.columns([1, 1])
     with c1:
-        st.plotly_chart(create_quality_score_gauge(q_report), use_container_width=True)
+        st.plotly_chart(create_quality_score_gauge(q_report), width="stretch")
     with c2:
-        st.plotly_chart(create_stage_duration_chart(run_meta), use_container_width=True)
+        st.plotly_chart(create_stage_duration_chart(run_meta), width="stretch")
 
     st.markdown("---")
     st.markdown("##### Lineage Sankey Diagram")
-    st.plotly_chart(create_sankey_lineage_chart(lineage_records), use_container_width=True)
+    st.plotly_chart(create_sankey_lineage_chart(lineage_records), width="stretch")
 
     profile = st.session_state.profile_report
     if profile and profile.get("has_geospatial"):
